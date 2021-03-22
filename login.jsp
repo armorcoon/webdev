@@ -1,4 +1,11 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+
+<%@page import="model.DBase.DBase"%>
+<%@page import="javax.naming.NamingException"%>
+<%@page import="javax.naming.InitialContext"%>
+<%@page import="javax.naming.Context"%>
+<%@page import="javax.sql.DataSource"%>
+
 <%
     String id = request.getParameter("id");
     String password = request.getParameter("password");
@@ -15,9 +22,9 @@
         <form method ="get">
 
             <label for="id">id number</label>
-            <input type="text" id="id" name ="id"><br>
+            <input type="text" name ="id"><br>
             <label for="password">password</label>
-            <input type="password" id="password" name ="password"><br>
+            <input type="password" name ="password"><br>
             <br><input type="submit" value="submit">
             &emsp;<input type="reset" value="reset">
         </form>
@@ -26,13 +33,10 @@
 
 <%
     } else {
-        Boolean loggedin;
-        if (id.equals("2") && password.equals("toor")) {
-            loggedin = true;
-        } else {
-            loggedin = false;
-        }
-        request.setAttribute("isIn", loggedin);
+        Context context = new InitialContext();
+        DataSource dataSource = (DataSource) context.lookup("java:comp/env/" + "jdbc/myDataSource");
+        DBase db = new DBase(dataSource);
+        request.setAttribute("isIn", db.authenticate(id, password));
         RequestDispatcher rd = request.getRequestDispatcher("success.jsp");
         rd.forward(request, response);
 
