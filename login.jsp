@@ -5,7 +5,6 @@
 <%@page import="javax.naming.InitialContext"%>
 <%@page import="javax.naming.Context"%>
 <%@page import="javax.sql.DataSource"%>
-
 <%
     String id = request.getParameter("id");
     String password = request.getParameter("password");
@@ -19,18 +18,41 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <form method ="get">
-
-            <label for="id">id number</label>
-            <input type="text" name ="id"><br>
-            <label for="password">password</label>
-            <input type="password" name ="password"><br>
-            <br><input type="submit" value="submit">
-            &emsp;<input type="reset" value="reset">
-        </form>
+        <table>
+            <form method ="get">
+                <tr>
+                    <td>
+                        <label for="id">Username</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" name ="id"><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="password">password</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="password" name ="password"><br>
+                    </td>
+                </tr>      
+                <tr>
+                    <td>
+                        <br><input type="submit" value="submit">
+                    </td>
+                </tr>
+                
+                    <td>
+                        <input type="reset" value="reset">
+                    </td> 
+            </form>
+        </table>
     </body>
 </html>
-
 <%
     } else {
         Context context = new InitialContext();
@@ -39,6 +61,5 @@
         request.setAttribute("isIn", db.authenticate(id, password));
         RequestDispatcher rd = request.getRequestDispatcher("success.jsp");
         rd.forward(request, response);
-
     }
 %>
