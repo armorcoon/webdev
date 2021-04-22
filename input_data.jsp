@@ -1,40 +1,83 @@
-
 <%@page import="model.DBase.DBase"%>
 <%@page import="javax.naming.NamingException"%>
 <%@page import="javax.naming.InitialContext"%>
 <%@page import="javax.naming.Context"%>
 <%@page import="javax.sql.DataSource"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-
-
-
 <!DOCTYPE html>
 <html>
     <head>
         <title>input database</title>
     </head>
     <body>
-        <form method="PST" action="processing.jsp">
-            <label for="id">ID product</label>s
-            <input type="text" name="id" value=""><br><br>
-            <label for="name">name of product</label>
-            <input type="text" name="name" value=""><br><br>
-            <label for="number">number of product</label>
-            <input type="text" name="number" value=""><br><br>
-            <label for="price">price of this product</label>s
-            <input type="text" name="price" value=""><br><br>
+        <table>
+            <form method ="POST" action="processing.jsp">
+                <tr>
+                    <td>
+                        <label for="id">ID product</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" name ="id"><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="name">name of product</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" name ="name"><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="number">number of product</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" name ="number"><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="price">price of this product</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" name ="price"><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td><br></td>
+                </tr>
+                <tr>
+                    <td>
+                        <button type="insert">submit</button>  
+                    </td>
 
-            <button type="insert">submit</input>
-     
-            <button type="reset" value="reset">reset</input>
-           
-        </form>
-        
-                    <form method="GET" action ="interface.jsp"
-                          <p><button type="submit">quit</button></p>
-                    </form>
-                    </body>
-                    </html>
+                </tr>
+            </form>
+        </table>
+        <br>
+        <table>
+            <tr>
+                <td>
+                    <button type="reset" value="reset">reset</input>  
+                </td>
+                <td>
+                    <form method="GET" action ="interface.jsp">
+                        <button type="submit">Home Page</button>
+                    </form>  
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>
 
 
 
