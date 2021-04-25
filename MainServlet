@@ -1,0 +1,121 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Controller;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import model.DBase.DBase;
+import product.Shoes;
+import javax.naming.NamingException;
+import javax.naming.InitialContext;
+import javax.naming.Context;
+import javax.sql.DataSource;
+
+@WebServlet(name = "/NewServlet", urlPatterns = {"/login", "/shoes", "/view", "/checkout", "/specific_order_view", "/specific_order_view_1", "/specific_order_view_2", "/specific_order_view_3"})
+public class MainServlet extends HttpServlet {
+
+    protected void service(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String uri = request.getRequestURI();
+            String nextpage = uri.substring(uri.lastIndexOf("/")) + ".jsp";
+            HttpSession session = request.getSession();
+            Context context = null;
+
+            try {
+                context = new InitialContext();
+            } catch (NamingException ex) {
+                Logger.getLogger(MainServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            DataSource dataSource = (DataSource) context.lookup("java:comp/env/" + "jdbc/myDataSource");
+
+            String id = request.getParameter("id");
+            String password = request.getParameter("password");
+            if (id != null && password != null) {
+                DBase db = new DBase(dataSource);
+                if (db.authenticate(id, password)) {
+                    nextpage = "success.jsp";
+                } else {
+                    nextpage = "notsuccess.jsp";
+                }
+            }
+
+            ArrayList<Shoes> basket = (ArrayList) session.getAttribute("basket");
+            if (basket == null) {
+                basket = new ArrayList<>(10);
+            }
+            if (nextpage.equals("/shoes.jsp")) {
+//                DBase db = new DBase(dataSource);
+//                ArrayList<Shoes> record = db.retriveShoes();
+//                request.setAttribute("record", record);
+//                RequestDispatcher rd = request.getRequestDispatcher(nextpage);
+//                rd.forward(request, response);
+
+            }
+
+            if (nextpage.equals("/specific_order_view.jsp")) {
+                String prod = request.getParameter("prod");
+                String qty = request.getParameter("qty");
+                String size = request.getParameter("size");
+                String price = request.getParameter("price");
+                if ((prod != null) && (size != null) && (qty != null) && (price != null)) {
+                    Shoes shoes = new Shoes(prod, qty, size, price);
+                    basket.add(shoes);
+                }
+
+            }
+            if (nextpage.equals("/specific_order_view_1.jsp")) {
+                String prod = request.getParameter("prod");
+                String qty = request.getParameter("qty");
+                String size = request.getParameter("size");
+                String price = request.getParameter("price");
+                if ((prod != null) && (size != null) && (qty != null) && (price != null)) {
+                    Shoes shoes = new Shoes(prod, qty, size, price);
+                    basket.add(shoes);
+                }
+
+            }
+            if (nextpage.equals("/specific_order_view_2.jsp")) {
+                String prod = request.getParameter("prod");
+                String qty = request.getParameter("qty");
+                String size = request.getParameter("size");
+                String price = request.getParameter("price");
+                if ((prod != null) && (size != null) && (qty != null) && (price != null)) {
+                    Shoes shoes = new Shoes(prod, qty, size, price);
+                    basket.add(shoes);
+                }
+
+            }
+            if (nextpage.equals("/specific_order_view_3.jsp")) {
+                String prod = request.getParameter("prod");
+                String qty = request.getParameter("qty");
+                String size = request.getParameter("size");
+                String price = request.getParameter("price");
+                if ((prod != null) && (size != null) && (qty != null) && (price != null)) {
+                    Shoes shoes = new Shoes(prod, qty, size, price);
+                    basket.add(shoes);
+                }
+
+            }
+            session.setAttribute("basket", basket);
+            RequestDispatcher rd = request.getRequestDispatcher(nextpage);
+            rd.forward(request, response);
+
+        } catch (NamingException ex) {
+            Logger.getLogger(MainServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+}
