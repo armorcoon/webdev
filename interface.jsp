@@ -29,7 +29,6 @@
         </form>
     </body>
     <div>OCDT Panupong Promnikorn z5233293</div>
-    <div>MIDN Ahmad Bilal z5244097</div>
 </html>
 
 

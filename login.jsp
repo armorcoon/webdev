@@ -17,49 +17,24 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
-    <body>
-        <table>
+    <body>   
             <form method ="get">
-                <tr>
-                    <td>
-                        <label for="id">Username</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input type="text" name ="id"><br>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="password">password</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input type="password" name ="password"><br>
-                    </td>
-                </tr>      
-                <tr>
-                    <td>
-                        <br><input type="submit" value="submit">
-                    </td>
-                </tr>
-                
-                    <td>
-                        <input type="reset" value="reset">
-                    </td> 
+                <label for='id'>username</label>
+                <input type="text" name ="id"><br><br>
+                <label for="password">password</label>
+                <input type="password" name ="password"><br>
+                <br>&nbsp;<input type="submit" value="login">
+                <input type="reset" value="reset">
             </form>
-        </table>
     </body>
 </html>
 <%
-    } else {
-        Context context = new InitialContext();
-        DataSource dataSource = (DataSource) context.lookup("java:comp/env/" + "jdbc/myDataSource");
-        DBase db = new DBase(dataSource);
-        request.setAttribute("isIn", db.authenticate(id, password));
-        RequestDispatcher rd = request.getRequestDispatcher("success.jsp");
-        rd.forward(request, response);
-    }
+//    } else {
+//        Context context = new InitialContext();
+//        DataSource dataSource = (DataSource) context.lookup("java:comp/env/" + "jdbc/myDataSource");
+//        DBase db = new DBase(dataSource);
+//        request.setAttribute("isIn", db.authenticate(id, password));
+//        RequestDispatcher rd = request.getRequestDispatcher("success.jsp");
+//        rd.forward(request, response);
+//    }
 %>
