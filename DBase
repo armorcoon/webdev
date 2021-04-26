@@ -1,0 +1,319 @@
+package model.DBase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.sql.DataSource;
+import java.util.*;
+import product.Shoes;
+
+public class DBase {
+
+    String ID;
+    String NAME;
+    String NUMBER;
+    String PRICE;
+
+    String id;
+    String password;
+
+    public DBase(String id, String name, String number, String price) {
+        this.ID = id;
+        this.NAME = name;
+        this.NUMBER = number;
+        this.PRICE = price;
+    }
+
+    public DBase(String id, String password) {
+        this.id = id;
+        this.password = password;
+    }
+
+    private DataSource dataSource;
+
+    public DBase(DataSource ds) {
+        this.dataSource = ds;
+    }
+
+    public void setdatabase(Integer idproduct, String name, Integer number, Double price) {
+        PreparedStatement pStatement = null;
+        try {
+            Connection connection = dataSource.getConnection();
+            pStatement = connection.prepareStatement("insert into STOCK(ID,NAME,NUMBER,PRICE) values(?,?,?,?)");
+            pStatement.setInt(1, idproduct);
+            pStatement.setString(2, name);
+            pStatement.setInt(3, number);
+            pStatement.setDouble(4, price);
+            pStatement.executeUpdate();
+            connection.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void register(String id, String firstname, String lastname, String phone) {
+        PreparedStatement pStatement = null;
+        try {
+            Connection connection = dataSource.getConnection();
+            pStatement = connection.prepareStatement("insert into USER_CONTACT(USERNAME,FIRST_NAME,LAST_NAME,PHONE) values(?,?,?,?)");
+            pStatement.setString(1, id);
+            pStatement.setString(2, firstname);
+            pStatement.setString(3, lastname);
+            pStatement.setString(4, phone);
+            pStatement.executeUpdate();
+            connection.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void registerAccount(String id, String password) {
+        PreparedStatement pStatement = null;
+        try {
+            Connection connection = dataSource.getConnection();
+            pStatement = connection.prepareStatement("insert into USERS(ID,PASSWORD) values(?,?)");
+            pStatement.setString(1, id);
+            pStatement.setString(2, password);
+            pStatement.executeUpdate();
+            connection.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void updatedataa(Integer idproduct, String name, Integer number, Double price, Integer checkID) {
+        PreparedStatement pStatement = null;
+        try {
+            Connection connection = dataSource.getConnection();
+            pStatement = connection.prepareStatement("update STOCK SET ID=?,NAME=?,NUMBER=?,PRICE=? where ID=?"
+            );
+            pStatement.setInt(1, idproduct);
+            pStatement.setString(2, name);
+            pStatement.setInt(3, number);
+            pStatement.setDouble(4, price);
+            pStatement.setInt(5, checkID);
+            pStatement.executeUpdate();
+            connection.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public Boolean authenticate(String id, String password) {
+        boolean matched = false;
+        try {
+            Connection connection = dataSource.getConnection();
+            PreparedStatement pStatement = connection.prepareStatement(
+                    "select * from USERS where "
+                    + "CAST(ID as varchar(128))='" + id + "' and "
+                    + "CAST(PASSWORD as varchar(128))='" + password
+                    + "'");
+            ResultSet resultSet = pStatement.executeQuery();
+            while (resultSet.next()) {
+                matched = true;
+            }
+            connection.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(DBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return matched;
+    }
+
+    public Boolean checkmatchwithID(Integer oldid) {
+        boolean checked = false;
+        try {
+            Connection connection = dataSource.getConnection();
+            PreparedStatement pStatement = connection.prepareStatement(
+                    "select * from STOCK");
+
+            ResultSet resultSet = pStatement.executeQuery();
+            while (resultSet.next()) {
+                String id = resultSet.getString("ID");
+                int id1 = Integer.parseInt(id);
+
+                if (id1 == oldid) {
+                    checked = true;
+                }
+            }
+            connection.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(DBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return checked;
+    }
+
+    public int checkmatchreturnID(Integer oldid) {
+        int index = 0;
+        try {
+            Connection connection = dataSource.getConnection();
+            PreparedStatement pStatement = connection.prepareStatement(
+                    "select * from STOCK");
+
+            ResultSet resultSet = pStatement.executeQuery();
+            while (resultSet.next()) {
+                String id = resultSet.getString("ID");
+                int id1 = Integer.parseInt(id);
+
+                if (id1 == oldid) {
+                    index = id1;
+                }
+            }
+            connection.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(DBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return index;
+    }
+
+    public ArrayList retriveShoes() {
+        ArrayList<Shoes> record = new ArrayList<Shoes>();
+        try {
+
+            Connection connection = dataSource.getConnection();
+            PreparedStatement pStatement = connection.prepareStatement(
+                    "SELECT * FROM SHOES");
+            ResultSet resultSet = pStatement.executeQuery();
+            while (resultSet.next()) {
+                String brand = resultSet.getString("BRAND");
+                String price = resultSet.getString("PRICE");
+                Shoes shoes = new Shoes(brand, price);
+                record.add(shoes);
+            }
+            connection.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(DBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return record;
+    }
+
+    public String retrivePrice(String brand) {
+        String price = "";
+        try {
+
+            Connection connection = dataSource.getConnection();
+            PreparedStatement pStatement = connection.prepareStatement(
+                    "SELECT * FROM SHOES");
+            ResultSet resultSet = pStatement.executeQuery();
+            while (resultSet.next()) {
+                String prod = resultSet.getString("BRAND");
+                if (brand == prod) {
+                    price = resultSet.getString("PRICE");
+                }
+            }
+            connection.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(DBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return price;
+    }
+
+    public ArrayList retrivedata() {
+        ArrayList<DBase> record = new ArrayList<DBase>();
+        try {
+
+            Connection connection = dataSource.getConnection();
+            PreparedStatement pStatement = connection.prepareStatement(
+                    "SELECT * FROM STOCK");
+            ResultSet resultSet = pStatement.executeQuery();
+            while (resultSet.next()) {
+                String id = resultSet.getString("ID");
+                String name = resultSet.getString("NAME");
+                String number = resultSet.getString("NUMBER");
+                String price = resultSet.getString("PRICE");
+                DBase product = new DBase(id, name, number, price);
+                record.add(product);
+            }
+            connection.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(DBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return record;
+    }
+
+    public ArrayList retriveadmin() {
+        ArrayList<DBase> admin = new ArrayList<DBase>();
+        try {
+
+            Connection connection = dataSource.getConnection();
+            PreparedStatement pStatement = connection.prepareStatement(
+                    "SELECT * FROM USERS");
+            ResultSet resultSet = pStatement.executeQuery();
+            while (resultSet.next()) {
+                String id = resultSet.getString("ID");
+                String password = resultSet.getString("PASSWORD");
+                DBase user = new DBase(id, password);
+                admin.add(user);
+            }
+            connection.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(DBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return admin;
+    }
+
+    public ArrayList retrivespecificdata(Integer checkID) {
+        ArrayList<DBase> specific_record = new ArrayList<DBase>();
+        try {
+
+            Connection connection = dataSource.getConnection();
+            PreparedStatement pStatement = connection.prepareStatement(
+                    "SELECT * FROM STOCK");
+
+            ResultSet resultSet = pStatement.executeQuery();
+            while (resultSet.next()) {
+                String id = resultSet.getString("ID");
+                int id1 = Integer.parseInt(id);
+                if (id1 == checkID) {
+                    String name = resultSet.getString("NAME");
+                    String number = resultSet.getString("NUMBER");
+                    String price = resultSet.getString("PRICE");
+                    DBase product = new DBase(id, name, number, price);
+                    specific_record.add(product);
+                }
+            }
+            connection.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(DBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return specific_record;
+
+    }
+
+    public String toString() {
+        return this.getID() + this.getNAME() + this.getNUMBER() + this.getPRICE();
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public String getNAME() {
+        return NAME;
+    }
+
+    public String getNUMBER() {
+        return NUMBER;
+    }
+
+    public String getPRICE() {
+        return PRICE;
+    }
+
+    public String getUser() {
+        return id;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+}
